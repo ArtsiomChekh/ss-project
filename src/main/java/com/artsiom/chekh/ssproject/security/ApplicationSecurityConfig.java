@@ -13,6 +13,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.util.concurrent.TimeUnit;
 
 import static com.artsiom.chekh.ssproject.security.ApplicationUserPermission.*;
 import static com.artsiom.chekh.ssproject.security.ApplicationUserRole.*;
@@ -48,7 +52,26 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
-                .httpBasic();
+                .formLogin() // may be .httpBasic();
+                    .loginPage("/login")
+                    .permitAll()
+                    .defaultSuccessUrl("/courses", true)
+                    .passwordParameter("password") // optional, to change default values
+                    .usernameParameter("username") // optional, to change default values
+                .and()
+                .rememberMe() // default to 2 weeks (cookie). In DB (username, expiration time, md5 hash)
+                    .tokenValiditySeconds((int)TimeUnit.DAYS.toSeconds(21)) // prolonging the session
+                    .key("somethingverysecured")
+                    .rememberMeParameter("remember-me") // optional, to change default values
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout","GET")) // ! logout must be POST (CSRF protection)
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID", "remember-me")
+                .logoutSuccessUrl("/login");
+
     }
 
     // used to retrieve the user’s authentication and authorization information.
