@@ -28,10 +28,10 @@ import static com.artsiom.chekh.ssproject.security.ApplicationUserRole.*;
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
-//    private final ApplicationUserService applicationUserService;
 
     @Autowired
     public ApplicationSecurityConfig(PasswordEncoder passwordEncoder) {
+
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -42,31 +42,31 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                  * disable because used Postman
                  */
                 .csrf().disable()
-                    .authorizeRequests()
-                    .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
-                    .antMatchers("/api/**").hasRole(STUDENT.name())
-                    .anyRequest()
-                    .authenticated()
+                .authorizeRequests()
+                .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
+                .antMatchers("/api/**").hasRole(STUDENT.name())
+                .anyRequest()
+                .authenticated()
                 .and()
-                    .formLogin() // may be .httpBasic();
-                    .loginPage("/login")
-                    .permitAll()
+                .formLogin() // may be .httpBasic();
+                .loginPage("/login")
+                .permitAll()
                 .defaultSuccessUrl("/courses", true)
                 .passwordParameter("password") // optional, to change default values
                 .usernameParameter("username") // optional, to change default values
                 .and()
-                    .rememberMe() // default to 2 weeks (cookie). In DB (username, expiration time, md5 hash)
-                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21)) // prolonging the session
-                    .key("somethingverysecured")
-                    .rememberMeParameter("remember-me") // optional, to change default values
+                .rememberMe() // default to 2 weeks (cookie). In DB (username, expiration time, md5 hash)
+                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21)) // prolonging the session
+                .key("somethingverysecured")
+                .rememberMeParameter("remember-me") // optional, to change default values
                 .and()
-                    .logout()
-                    .logoutUrl("/logout")
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // ! logout must be POST (CSRF protection)
-                    .clearAuthentication(true)
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID", "remember-me")
-                    .logoutSuccessUrl("/login");
+                .logout()
+                .logoutUrl("/logout")
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // ! logout must be POST (CSRF protection)
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID", "remember-me")
+                .logoutSuccessUrl("/login");
 
     }
 
@@ -77,21 +77,21 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         UserDetails annaSmithUser = User.builder()
                 .username("annasmith")
                 .password(passwordEncoder.encode("password"))
-//               .roles(STUDENT.name()) // ROLE_STUDENT
+                .roles(STUDENT.name()) // ROLE_STUDENT
                 .authorities(STUDENT.getGrantedAuthorities())
                 .build();
 
         UserDetails lindaUser = User.builder()
                 .username("linda")
                 .password(passwordEncoder.encode("password123"))
-//              .roles(ADMIN.name())
+                .roles(ADMIN.name())
                 .authorities(ADMIN.getGrantedAuthorities())
                 .build();
 
         UserDetails tomUser = User.builder()
                 .username("tom")
                 .password(passwordEncoder.encode("password123"))
-//              .roles(ADMINTRAINEE.name())
+                .roles(ADMINTRAINEE.name())
                 .authorities(ADMINTRAINEE.getGrantedAuthorities())
                 .build();
 
