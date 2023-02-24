@@ -1,4 +1,4 @@
-# ss-project
+# Spring Security project
 
 This is Spring Security and Rest API application.
 
