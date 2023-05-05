@@ -2,7 +2,7 @@
 
 This is Spring Security and Rest API application.
 
-Users should be able to:
+## Features
 
 * Login
 * Logout
